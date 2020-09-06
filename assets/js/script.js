@@ -82,7 +82,15 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     console.log(currentHumidity);
     currentHumidityEl.textContent = "Humidity: " + currentHumidity + "%";
     console.log(currentHumidityEl);
-    currentWeatherEl.appendChild(currentHumidityEl);    
+    currentWeatherEl.appendChild(currentHumidityEl);
+    
+    // create an element for the wind speed
+    var currentWindEl = document.createElement("p");
+    var currentWind = weatherData.wind.speed;
+    console.log(currentWind);
+    currentWindEl.textContent = "Wind Speed: " + currentWind + " MPH";
+    console.log(currentWindEl);
+    currentWeatherEl.appendChild(currentWindEl);
 
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
