@@ -52,13 +52,20 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     currentWeatherContainerEl.innerHTML = "";
     // create a container for the current weather
     var currentWeatherEl = document.createElement("div");
-    currentWeatherEl.classList = "card align-left";
+    currentWeatherEl.classList = "card align-left p-1";
     // create a heading for the city name
-    var cityName = document.createElement("h3");
+    var cityNameHeader = document.createElement("h3");
     // get the city name that the API provided from the search
-    cityName.textContent = weatherData.name + " (" + currentDate + ")";
+    var cityName = weatherData.name;
+    // get the weather icon for the current weather
+    var iconCode = weatherData.weather[0].icon;
+    iconEl = getIcon(iconCode);
+    // create the header
+    cityNameHeader.textContent = cityName + " (" + currentDate + ") ";
+    // append the icon to the header
+    cityNameHeader.appendChild(iconEl);
     // append the name to the container
-    currentWeatherEl.appendChild(cityName);
+    currentWeatherEl.appendChild(cityNameHeader);
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
 
@@ -74,6 +81,7 @@ var getIcon = function(iconCode) {
     // Create an icon image element
     var iconEl = document.createElement("img")
     iconEl.setAttribute("src", iconUrl)
+    return(iconEl);
 }
 
 
