@@ -76,6 +76,14 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     console.log(currentTempEl);
     currentWeatherEl.appendChild(currentTempEl);
 
+    // create an element for the humidity
+    var currentHumidityEl = document.createElement("p");
+    var currentHumidity = weatherData.main.humidity;
+    console.log(currentHumidity);
+    currentHumidityEl.textContent = "Humidity: " + currentHumidity + "%";
+    console.log(currentHumidityEl);
+    currentWeatherEl.appendChild(currentHumidityEl);    
+
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
 
