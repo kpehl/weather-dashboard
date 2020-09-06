@@ -52,7 +52,8 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     currentWeatherContainerEl.innerHTML = "";
     // create a container for the current weather
     var currentWeatherEl = document.createElement("div");
-    currentWeatherEl.classList = "card align-left p-1";
+    currentWeatherEl.classList = "card align-left p-3";
+
     // create a heading for the city name
     var cityNameHeader = document.createElement("h3");
     // get the city name that the API provided from the search
@@ -66,6 +67,15 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     cityNameHeader.appendChild(iconEl);
     // append the name to the container
     currentWeatherEl.appendChild(cityNameHeader);
+
+    // create an element for the temperature
+    var currentTempEl = document.createElement("p");
+    var currentTemp = weatherData.main.temp;
+    console.log(currentTemp);
+    currentTempEl.textContent = "Temperature: " + currentTemp + " °F";
+    console.log(currentTempEl);
+    currentWeatherEl.appendChild(currentTempEl);
+
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
 
