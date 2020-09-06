@@ -8,9 +8,18 @@ var cityInputEl = document.querySelector("#city");
 
 // A function to handle the form input
 var formSubmitHandler = function(event) {
+    // prevent the default action of submitting the input to an external database
     event.preventDefault();
     console.log(event);
-}
+    // get the value of the city
+    var city = cityInputEl.value.trim();
+    if (city) {
+        getCurrentWeather(city);
+        cityInputEl.value = "";
+    } else {
+        alert("Please enter a city");
+    }
+};
 
 // Create a URL for a 5 day forcast query
 var forecastApiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&APPID=" + apiKey;
@@ -36,10 +45,6 @@ var getIcon = function(iconCode) {
     iconEl.setAttribute("src", iconUrl)
 }
 
-// A variable for the city name, initially hard coded for testing
-var city = "Jacksonville";
-
-getCurrentWeather(city);
 
 // Event Listener for the Search Button
 cityFormEl.addEventListener("submit", formSubmitHandler)
