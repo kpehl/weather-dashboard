@@ -36,13 +36,19 @@ var formSubmitHandler = function(event) {
     }
 };
 
-// A function to save the most recent search
+// A function to save 10 most recent searches
 var savedSearchesHandler = function(city) {
     console.log("savedSearchesHandler was called for " + city);
     searchEl = document.createElement("p");
     searchEl.setAttribute("city-search", city);
     searchEl.textContent = city;
-    savedSearchesContainerEl.appendChild(searchEl);
+    savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
+    var savedSearchesCount = savedSearchesContainerEl.childElementCount;
+    console.log(savedSearchesCount);
+    if (savedSearchesCount > 10) {
+        console.log("too long");
+        savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
+    }
 };
 
 // Function to get the current weather data, uv data, and 5 day forecast
