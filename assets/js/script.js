@@ -37,9 +37,10 @@ var formSubmitHandler = function(event) {
 };
 
 // A function to save 10 most recent searches
-var savedSearchesHandler = function(city) {
+var addSavedSearch = function(city) {
     console.log("savedSearchesHandler was called for " + city);
-    searchEl = document.createElement("p");
+    searchEl = document.createElement("button");
+    searchEl.classList = "btn";
     searchEl.setAttribute("city-search", city);
     searchEl.textContent = city;
     savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
@@ -48,6 +49,15 @@ var savedSearchesHandler = function(city) {
     if (savedSearchesCount > 10) {
         console.log("too long");
         savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
+    }
+};
+
+// A function to handle the language button clicks
+var savedSearchesHandler = function(event) {
+    var citySearch = event.target.getAttribute("city-search");
+    // if a language is selected, clear out old content and get the featured repos (asynchonous event, so order doesn't matter in the if)
+    if (citySearch) {
+        getCurrentWeather(citySearch);
     }
 };
 
@@ -62,7 +72,7 @@ var getCurrentWeather = function(city) {
             // get the named city from the data
             var cityName = data.name;
             // save the successful search in the saved searches list
-            savedSearchesHandler(cityName);
+            addSavedSearch(cityName);
             // Get the latitude and longitude from the weather data
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
@@ -243,7 +253,8 @@ var displayForecast = function(data) {
 };
 
 
-
-
 // Event Listener for the Search Button
 cityFormEl.addEventListener("submit", formSubmitHandler)
+
+// Event Listener for the Saved Search Buttons
+savedSearchesContainerEl.addEventListener("click", savedSearchesHandler)
