@@ -17,7 +17,6 @@ var forecastContainerEl = document.querySelector("#forecast-container");
 // A moment for the current date
 var currentDate = moment().format("M/DD/YYYY");
 
-
 // A function to handle the form input
 var formSubmitHandler = function(event) {
     // prevent the default action of submitting the input to an external database
@@ -33,7 +32,7 @@ var formSubmitHandler = function(event) {
     }
 };
 
-// Function to get the current weather data
+// Function to get the current weather data, uv data, and 5 day forecast
 var getCurrentWeather = function(city) {
     console.log("the get current weather function has been called for " + city);
     // Create a URL for a current weather query, specifying the city, that imperial units are desired, and adding my API key
@@ -46,15 +45,20 @@ var getCurrentWeather = function(city) {
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
             // console.log("the latitude is " + cityLat + " and the longitude is " + cityLon);
-            // create a URL for the current UV index query
-            var uvApiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=" + apiKey;
+            // Create a URL for the one call query with current weather, uvi, and 7 day forecast
+            var oneCallUrl = "http://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
+            console.log("getCurrentWeather" + oneCallUrl);
+            // // create a URL for the current UV index query
+            // var uvApiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=" + apiKey;
             // use a nested fetch to get the UV data with the defined latitude and longitude
-            return fetch(uvApiUrl);
+            return fetch(oneCallUrl);
         })
         .then(function(response) {
             return response.json().then(function(data) {
                 // display the current UV data on the card
                 displayCurrentUv(data);
+                //display the 5 day forecast data in a new set of cards
+                displayForecast(data);
             })
         })
     })
@@ -81,6 +85,9 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // get the weather icon for the current weather
     var iconCode = weatherData.weather[0].icon;
     iconEl = getIcon(iconCode);
+    // get the latitude and longitude
+    cityLatEl = weatherData.coord.lat;
+    cityLonEl = weatherData.coord.lon;
     // create the header
     cityNameHeader.textContent = cityName + " (" + currentDate + ") ";
     // append the icon to the header
@@ -106,9 +113,6 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     currentWindEl.textContent = "Wind Speed: " + currentWind + " MPH";
     currentWeatherEl.appendChild(currentWindEl);
 
-    // // create an element for the UV index
-    // currentWeatherEl.appendChild(currentUvEl);
-
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
 
@@ -119,7 +123,7 @@ var displayCurrentUv = function(data) {
     // create an element for the UV index
     var currentUvEl = document.createElement("p");
     // set the value based on the API data
-    var currentUv = data.value;
+    var currentUv = data.current.uvi;
     // add a badge span with a color for Favorable (success), Moderate (warning), and Sever (danger)
     var uvSpan = document.createElement("span");
     if (currentUv > 7) {
@@ -134,16 +138,13 @@ var displayCurrentUv = function(data) {
     uvSpan.textContent = currentUv;
     // create the text context of the element
     currentUvEl.textContent = "UV Index: ";
+    // create the text context of the element
     currentUvEl.appendChild(uvSpan);
-    console.log(currentUvEl);
     // get the current weather card populated by displayCurrentWeather()
     currentWeatherEl.querySelector("#current-weather");
     // append the current UV index
     currentWeatherEl.appendChild(currentUvEl);
 };
-
-// Create a URL for a 5 day forcast query
-var forecastApiUrl = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&APPID=" + apiKey;
 
 // A function to generate the icon image tag
 var getIcon = function(iconCode) {
@@ -153,7 +154,34 @@ var getIcon = function(iconCode) {
     var iconEl = document.createElement("img")
     iconEl.setAttribute("src", iconUrl)
     return(iconEl);
-}
+};
+
+// A function to display the 5 day forecast
+var displayForecast = function(data) {
+    console.log("displayForecast was called");
+    // clear out old data
+    forecastContainerEl.textContent = "";
+    console.log(data.daily[0].temp.max);
+    // loop over the daily data to get the information for each card, 
+    // starting with the second entry in the array, i.e. tomorrow, and going for 5 days
+    var forecastDate = [];
+    var dailyMaxTemp = [];
+    var dailyMaxHumidity = [];
+    var dailyIconCode = [];
+    for (var i = 1; i < 6; i++) {
+        var j = i-1;
+        forecastDate[j] = data.daily[i].dt;
+        dailyMaxTemp[j] = data.daily[i].temp.max;
+        dailyMaxHumidity[j] = data.daily[i].humidity;
+        dailyIconCode[j] = data.daily[i].weather[0].icon;
+    }
+    console.log(forecastDate);
+    console.log(dailyMaxTemp);
+    console.log(dailyMaxHumidity);
+    console.log(dailyIconCode);
+};
+
+
 
 
 // Event Listener for the Search Button
