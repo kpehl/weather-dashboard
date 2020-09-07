@@ -7,6 +7,8 @@ var cityFormEl = document.querySelector("#city-form");
 var cityInputEl = document.querySelector("#city");
 // An element for the current weather container
 var currentWeatherContainerEl = document.querySelector("#current-weather-container");
+// An element for the current weather card
+var currentWeatherEl = document.createElement("div");
 // An element for the city returned by the API
 var citySearchTerm = document.querySelector("#city-search-term");
 // An element for the forecast container
@@ -20,7 +22,6 @@ var currentDate = moment().format("M/DD/YYYY");
 var formSubmitHandler = function(event) {
     // prevent the default action of submitting the input to an external database
     event.preventDefault();
-    console.log(event);
     // get the value of the city and clear the form
     var city = cityInputEl.value.trim();
     if (city) {
@@ -38,21 +39,40 @@ var getCurrentWeather = function(city) {
     // Create a URL for a current weather query, specifying the city, that imperial units are desired, and adding my API key
     var weatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&APPID=" + apiKey;
     fetch(weatherApiUrl).then(function(response) {
-        response.json().then(function(data) {
+        return response.json().then(function(data) {
+            // display the weather data provided
             displayCurrentWeather(data, city);
+            // Get the latitude and longitude from the weather data
+            var cityLat = data.coord.lat;
+            var cityLon = data.coord.lon;
+            // console.log("the latitude is " + cityLat + " and the longitude is " + cityLon);
+            // create a URL for the current UV index query
+            var uvApiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=" + apiKey;
+            // use a nested fetch to get the UV data with the defined latitude and longitude
+            return fetch(uvApiUrl);
         })
+        .then(function(response) {
+            return response.json().then(function(data) {
+                // display the current UV data on the card
+                displayCurrentUv(data);
+            })
+        })
+    })
+    .catch(function(error) {
+        alert("Unable to connect to Open Weather Map Current Weather API")
     })
 };
 
 // Function to display the current weather data
 var displayCurrentWeather = function(weatherData, searchTerm) {
-    console.log(weatherData);
-    console.log(searchTerm);
+    // console.log(weatherData);
+    // console.log(searchTerm);
     // clear old content
     currentWeatherContainerEl.innerHTML = "";
     // create a container for the current weather
-    var currentWeatherEl = document.createElement("div");
+    // var currentWeatherEl = document.createElement("div");
     currentWeatherEl.classList = "card align-left p-3";
+    currentWeatherEl.id = "current-weather"
 
     // create a heading for the city name
     var cityNameHeader = document.createElement("h3");
@@ -71,30 +91,38 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // create an element for the temperature
     var currentTempEl = document.createElement("p");
     var currentTemp = weatherData.main.temp;
-    console.log(currentTemp);
     currentTempEl.textContent = "Temperature: " + currentTemp + " °F";
-    console.log(currentTempEl);
     currentWeatherEl.appendChild(currentTempEl);
 
     // create an element for the humidity
     var currentHumidityEl = document.createElement("p");
     var currentHumidity = weatherData.main.humidity;
-    console.log(currentHumidity);
     currentHumidityEl.textContent = "Humidity: " + currentHumidity + "%";
-    console.log(currentHumidityEl);
     currentWeatherEl.appendChild(currentHumidityEl);
     
     // create an element for the wind speed
     var currentWindEl = document.createElement("p");
     var currentWind = weatherData.wind.speed;
-    console.log(currentWind);
     currentWindEl.textContent = "Wind Speed: " + currentWind + " MPH";
-    console.log(currentWindEl);
     currentWeatherEl.appendChild(currentWindEl);
+
+    // // create an element for the UV index
+    // currentWeatherEl.appendChild(currentUvEl);
 
     // append the container to the DOM
     currentWeatherContainerEl.appendChild(currentWeatherEl);
 
+};
+
+// A function to display the UV index data
+var displayCurrentUv = function(data) {
+    // create an element for the UV index
+    var currentUvEl = document.createElement("p");
+    var currentUv = data.value;
+    currentUvEl.textContent = "UV Index: " + currentUv;
+    console.log(currentUvEl);
+    currentWeatherEl.querySelector("#current-weather");
+    currentWeatherEl.appendChild(currentUvEl);
 };
 
 // Create a URL for a 5 day forcast query
