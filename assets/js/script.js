@@ -46,12 +46,15 @@ var loadSavedSearches = function() {
       console.log("loadSavedSearches found none")
     }
     $.each(savedSearchesArr, function(index,savedSearchItem) {
-        // if (savedSearchItem != searchEl) {
-            searchEl = addSavedSearchButton(savedSearchItem);
-            console.log(searchEl);
-            savedSearchesContainerEl.appendChild(searchEl)
-        // }
+        searchEl = addSavedSearchButton(savedSearchItem);
+        console.log(searchEl);
+        savedSearchesContainerEl.appendChild(searchEl)
         });
+    // if the DOM list is longer than 10, remove the last (oldest) value
+    var savedSearchesCount = savedSearchesContainerEl.childElementCount;
+    if (savedSearchesCount > 10) {
+        savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
+    }
 };
 
 // A function create a saved search button for a city
@@ -66,6 +69,12 @@ var addSavedSearchButton = function(city) {
 
 // A function to add a saved search to the saved search array and to the DOM
 var addSavedSearch = function(city) {
+    // loop through the saved searches to see if a search is a duplicate, and if it is, remove the older instance
+    $.each(savedSearchesArr, function(index,savedSearchItem) {
+        if(savedSearchItem == city) {
+            savedSearchesArr.splice(index,1);
+        }
+    });
     // add the new search to the beginning of the array
     savedSearchesArr.splice(0,0,city);
     // if the saved searches array is longer than 10, pop off the last (oldest) value
@@ -74,15 +83,10 @@ var addSavedSearch = function(city) {
     }
     // save the array to local storage
     saveSearches();
-    // create the new search button for the DOM
-    searchEl = addSavedSearchButton(city);
-    // append the new button to the DOM at the top of the list
-    savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
-    // if the DOM list is longer than 10, remove the last (oldest) value
-    var savedSearchesCount = savedSearchesContainerEl.childElementCount;
-    if (savedSearchesCount > 10) {
-        savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
-    }
+    //clear the old data
+    savedSearchesContainerEl.textContent = "";
+    // load the saved searches to populate the DOM
+    loadSavedSearches();
 };
 
 // A function to save the recent searches
