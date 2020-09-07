@@ -36,7 +36,6 @@ var formSubmitHandler = function(event) {
 
 // Function to get the current weather data, uv data, and 5 day forecast
 var getCurrentWeather = function(city) {
-    console.log("the get current weather function has been called for " + city);
     // Create a URL for a current weather query, specifying the city, that imperial units are desired, and adding my API key
     var weatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&APPID=" + apiKey;
     fetch(weatherApiUrl).then(function(response) {
@@ -82,7 +81,8 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     var cityName = weatherData.name;
     // get the weather icon for the current weather
     var iconCode = weatherData.weather[0].icon;
-    iconEl = getIcon(iconCode);
+    var iconCodeText = weatherData.weather[0].description;
+    iconEl = getIcon(iconCode, iconCodeText);
     // get the latitude and longitude
     cityLatEl = weatherData.coord.lat;
     cityLonEl = weatherData.coord.lon;
@@ -145,20 +145,21 @@ var displayCurrentUv = function(data) {
 };
 
 // A function to generate the icon image tag
-var getIcon = function(iconCode) {
+var getIcon = function(iconCode, iconCodeText) {
     // Create a URL for the weather icon provided by the weather data
     var iconUrl = "http://openweathermap.org/img/wn/" + iconCode + "@2x.png"
     // Create an icon image element
     var iconEl = document.createElement("img")
     iconEl.setAttribute("src", iconUrl)
+    iconEl.setAttribute("alt", iconCodeText)
     return(iconEl);
 };
 
 // A function to display the 5 day forecast
 var displayForecast = function(data) {
-    console.log("displayForecast was called");
     // clear out old data
     forecastContainerEl.textContent = "";
+    forecastCardContainerEl.textContent = "";
     // Add the title
     var forecastContainerTitleEl = document.createElement("h3");
     forecastContainerTitleEl.textContent = "5-Day Forecast:";
@@ -169,6 +170,7 @@ var displayForecast = function(data) {
     var dailyMaxTemp = [];
     var dailyMaxHumidity = [];
     var dailyIconCode = [];
+    var dailyIconCodeText = [];
     var cardElementName = [];
     for (var i = 1; i < 6; i++) {
         var j = i-1;
@@ -176,22 +178,43 @@ var displayForecast = function(data) {
         dailyMaxTemp[j] = data.daily[i].temp.max;
         dailyMaxHumidity[j] = data.daily[i].humidity;
         dailyIconCode[j] = data.daily[i].weather[0].icon;
+        dailyIconCodeText[j] = data.daily[i].weather[0].description;
         cardElementName[j] = "forecastCard" + j;
     }
-    console.log(forecastDate);
-    console.log(dailyMaxTemp);
-    console.log(dailyMaxHumidity);
-    console.log(dailyIconCode);
-    console.log(cardElementName);
+    
+    // console.log(forecastDate);
+    // console.log(dailyMaxTemp);
+    // console.log(dailyMaxHumidity);
+    // console.log(dailyIconCode);
+    // console.log(dailyIconCodeText);
+    // console.log(cardElementName);
+
     // create the forecast cards
     for (var i = 0; i < 5; i++) {
+        // Create the card div and style it
         var forecastCardEl = document.createElement("div");
-        forecastCardEl.classList = ("card text-white bg-primary p-3")
+        forecastCardEl.classList = ("card text-white bg-primary p-1")
+        forecastCardEl.id = cardElementName[i];
+        // Create the card body div
         var cardBody = document.createElement("div");
         cardBody.classList = ("card-body");
+        // Create the card title with the date and append it
         var cardTitle = document.createElement("h5");
+        cardTitle.classList = ("card-title");
         cardTitle.textContent = forecastDate[i]
         cardBody.appendChild(cardTitle);
+        // Create the icon and append it
+        var iconCodeEl = getIcon(dailyIconCode[i], dailyIconCodeText[i]);
+        cardBody.appendChild(iconCodeEl);
+        // Create the daily max temperature and append it
+        var tempEl = document.createElement("p");
+        tempEl.textContent = "Temp: " + dailyMaxTemp[i] + " °F";
+        cardBody.appendChild(tempEl);
+        // Create the daily max humidity and append it
+        var humidityEl = document.createElement("p");
+        humidityEl.textContent = "Humidity: " + dailyMaxHumidity[i] + "%";
+        cardBody.appendChild(humidityEl);
+
         forecastCardEl.appendChild(cardBody);
         forecastCardContainerEl.appendChild(forecastCardEl);
     }
