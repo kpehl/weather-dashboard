@@ -7,7 +7,7 @@ var cityFormEl = document.querySelector("#city-form");
 var cityInputEl = document.querySelector("#city");
 // An element for the current weather container
 var currentWeatherContainerEl = document.querySelector("#current-weather-container");
-// An element for the current weather card
+// create a container for the current weather
 var currentWeatherEl = document.createElement("div");
 // An element for the city returned by the API
 var citySearchTerm = document.querySelector("#city-search-term");
@@ -68,8 +68,8 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // console.log(weatherData);
     // console.log(searchTerm);
     // clear old content
-    currentWeatherContainerEl.innerHTML = "";
-    // create a container for the current weather
+    currentWeatherContainerEl.textContent = "";
+    currentWeatherEl.textContent = "";
     // var currentWeatherEl = document.createElement("div");
     currentWeatherEl.classList = "card align-left p-3";
     currentWeatherEl.id = "current-weather"
