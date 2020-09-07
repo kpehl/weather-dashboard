@@ -36,23 +36,62 @@ var formSubmitHandler = function(event) {
     }
 };
 
-// A function to save 10 most recent searches
-var addSavedSearch = function(city) {
+// Initialize the saved searches array
+var savedSearchesArr = [];
+// Create a function to load saved searches
+var loadSavedSearches = function() {
+    savedSearchesArr = JSON.parse(localStorage.getItem("city-weather"));
+    if (!savedSearchesArr) {
+      savedSearchesArr = [];
+      console.log("loadSavedSearches found none")
+    }
+    $.each(savedSearchesArr, function(savedSearchItem) {
+        // if (savedSearchItem != searchEl) {
+            searchEl = addSavedSearchButton(savedSearchItem);
+            console.log(searchEl);
+            savedSearchesContainerEl.appendChild(searchEl)
+        // }
+        });
+};
+
+// A function create a saved search button for a city
+var addSavedSearchButton = function(city) {
     console.log("savedSearchesHandler was called for " + city);
     searchEl = document.createElement("button");
     searchEl.classList = "btn";
     searchEl.setAttribute("city-search", city);
     searchEl.textContent = city;
-    savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
-    var savedSearchesCount = savedSearchesContainerEl.childElementCount;
-    console.log(savedSearchesCount);
-    if (savedSearchesCount > 10) {
-        console.log("too long");
-        savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
-    }
+    return searchEl;
 };
 
-// A function to handle the language button clicks
+// A function to add a saved search to the saved search array
+var addSavedSearch = function(city) {
+    savedSearchesArr.splice(0,0,city);
+    searchEl = addSavedSearchButton(city);
+    savedSearchesContainerEl.appendChild(searchEl);
+};
+
+    // if (savedSearchesArr.length > 10) {
+    //     savedSearchesArr.pop();
+    // }
+    // console.log("after loading and popping " + savedSearchesArr);
+
+    // savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
+    // var savedSearchesCount = savedSearchesContainerEl.childElementCount;
+    // console.log(savedSearchesCount);
+    // if (savedSearchesCount > 10) {
+    //     console.log("too long");
+    //     savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
+    // }
+
+
+// A function to save the recent searches
+var saveSearches = function() {
+    localStorage.setItem("city-weather", JSON.stringify(savedSearchesArr));
+  };
+
+
+// A function to handle the saved search button clicks
 var savedSearchesHandler = function(event) {
     var citySearch = event.target.getAttribute("city-search");
     // if a language is selected, clear out old content and get the featured repos (asynchonous event, so order doesn't matter in the if)
