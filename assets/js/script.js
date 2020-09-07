@@ -64,28 +64,26 @@ var addSavedSearchButton = function(city) {
     return searchEl;
 };
 
-// A function to add a saved search to the saved search array
+// A function to add a saved search to the saved search array and to the DOM
 var addSavedSearch = function(city) {
+    // add the new search to the beginning of the array
     savedSearchesArr.splice(0,0,city);
-    console.log("from add saved search" + savedSearchesArr);
-    searchEl = addSavedSearchButton(city);
-    savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
+    // if the saved searches array is longer than 10, pop off the last (oldest) value
+    if (savedSearchesArr.length > 10) {
+        savedSearchesArr.pop();
+    }
+    // save the array to local storage
     saveSearches();
+    // create the new search button for the DOM
+    searchEl = addSavedSearchButton(city);
+    // append the new button to the DOM at the top of the list
+    savedSearchesContainerEl.insertBefore(searchEl, savedSearchesContainerEl.firstChild);
+    // if the DOM list is longer than 10, remove the last (oldest) value
+    var savedSearchesCount = savedSearchesContainerEl.childElementCount;
+    if (savedSearchesCount > 10) {
+        savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
+    }
 };
-
-    // if (savedSearchesArr.length > 10) {
-    //     savedSearchesArr.pop();
-    // }
-    // console.log("after loading and popping " + savedSearchesArr);
-
-    // 
-    // var savedSearchesCount = savedSearchesContainerEl.childElementCount;
-    // console.log(savedSearchesCount);
-    // if (savedSearchesCount > 10) {
-    //     console.log("too long");
-    //     savedSearchesContainerEl.removeChild(savedSearchesContainerEl.lastChild);
-    // }
-
 
 // A function to save the recent searches
 var saveSearches = function() {
