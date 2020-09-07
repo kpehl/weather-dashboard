@@ -118,10 +118,27 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
 var displayCurrentUv = function(data) {
     // create an element for the UV index
     var currentUvEl = document.createElement("p");
+    // set the value based on the API data
     var currentUv = data.value;
-    currentUvEl.textContent = "UV Index: " + currentUv;
+    // add a badge span with a color for Favorable (success), Moderate (warning), and Sever (danger)
+    var uvSpan = document.createElement("span");
+    if (currentUv > 7) {
+        uvSpan.classList = "badge badge-danger"
+    } else if (currentUv > 3) {
+        uvSpan.classList = "badge badge-warning"
+    } else {
+        uvSpan.classList = "badge badge-success"
+    }
+
+    // add the value of the UV index to the badge
+    uvSpan.textContent = currentUv;
+    // create the text context of the element
+    currentUvEl.textContent = "UV Index: ";
+    currentUvEl.appendChild(uvSpan);
     console.log(currentUvEl);
+    // get the current weather card populated by displayCurrentWeather()
     currentWeatherEl.querySelector("#current-weather");
+    // append the current UV index
     currentWeatherEl.appendChild(currentUvEl);
 };
 
