@@ -45,7 +45,7 @@ var loadSavedSearches = function() {
       savedSearchesArr = [];
       console.log("loadSavedSearches found none")
     }
-    $.each(savedSearchesArr, function(savedSearchItem) {
+    $.each(savedSearchesArr, function(index,savedSearchItem) {
         // if (savedSearchItem != searchEl) {
             searchEl = addSavedSearchButton(savedSearchItem);
             console.log(searchEl);
@@ -293,6 +293,8 @@ var displayForecast = function(data) {
     forecastContainerEl.appendChild(forecastCardContainerEl);
 };
 
+// Load saved searches upon page load
+loadSavedSearches();
 
 // Event Listener for the Search Button
 cityFormEl.addEventListener("submit", formSubmitHandler)
