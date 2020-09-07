@@ -13,9 +13,11 @@ var currentWeatherEl = document.createElement("div");
 var citySearchTerm = document.querySelector("#city-search-term");
 // An element for the forecast container
 var forecastContainerEl = document.querySelector("#forecast-container");
+var forecastCardContainerEl = document.createElement("div");
+forecastCardContainerEl.classList = ("card-deck");
 
 // A moment for the current date
-var currentDate = moment().format("M/DD/YYYY");
+var currentDate = moment().format("M/D/YYYY");
 
 // A function to handle the form input
 var formSubmitHandler = function(event) {
@@ -44,13 +46,9 @@ var getCurrentWeather = function(city) {
             // Get the latitude and longitude from the weather data
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
-            // console.log("the latitude is " + cityLat + " and the longitude is " + cityLon);
+            // use a nested fetch to get the UV data and the forecast data with the defined latitude and longitude
             // Create a URL for the one call query with current weather, uvi, and 7 day forecast
             var oneCallUrl = "http://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
-            console.log("getCurrentWeather" + oneCallUrl);
-            // // create a URL for the current UV index query
-            // var uvApiUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=" + apiKey;
-            // use a nested fetch to get the UV data with the defined latitude and longitude
             return fetch(oneCallUrl);
         })
         .then(function(response) {
@@ -62,9 +60,9 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    .catch(function(error) {
-        alert("Unable to connect to Open Weather Map Current Weather API")
-    })
+    // .catch(function(error) {
+    //     alert("Unable to connect to Open Weather Map Current Weather API")
+    // })
 };
 
 // Function to display the current weather data
@@ -161,24 +159,43 @@ var displayForecast = function(data) {
     console.log("displayForecast was called");
     // clear out old data
     forecastContainerEl.textContent = "";
-    console.log(data.daily[0].temp.max);
+    // Add the title
+    var forecastContainerTitleEl = document.createElement("h3");
+    forecastContainerTitleEl.textContent = "5-Day Forecast:";
+    forecastContainerEl.appendChild(forecastContainerTitleEl);
     // loop over the daily data to get the information for each card, 
     // starting with the second entry in the array, i.e. tomorrow, and going for 5 days
     var forecastDate = [];
     var dailyMaxTemp = [];
     var dailyMaxHumidity = [];
     var dailyIconCode = [];
+    var cardElementName = [];
     for (var i = 1; i < 6; i++) {
         var j = i-1;
-        forecastDate[j] = data.daily[i].dt;
+        forecastDate[j] = moment.unix(data.daily[i].dt).format("M/D/YYYY");
         dailyMaxTemp[j] = data.daily[i].temp.max;
         dailyMaxHumidity[j] = data.daily[i].humidity;
         dailyIconCode[j] = data.daily[i].weather[0].icon;
+        cardElementName[j] = "forecastCard" + j;
     }
     console.log(forecastDate);
     console.log(dailyMaxTemp);
     console.log(dailyMaxHumidity);
     console.log(dailyIconCode);
+    console.log(cardElementName);
+    // create the forecast cards
+    for (var i = 0; i < 5; i++) {
+        var forecastCardEl = document.createElement("div");
+        forecastCardEl.classList = ("card text-white bg-primary p-3")
+        var cardBody = document.createElement("div");
+        cardBody.classList = ("card-body");
+        var cardTitle = document.createElement("h5");
+        cardTitle.textContent = forecastDate[i]
+        cardBody.appendChild(cardTitle);
+        forecastCardEl.appendChild(cardBody);
+        forecastCardContainerEl.appendChild(forecastCardEl);
+    }
+    forecastContainerEl.appendChild(forecastCardContainerEl);
 };
 
 
