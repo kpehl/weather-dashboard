@@ -15,6 +15,8 @@ var citySearchTerm = document.querySelector("#city-search-term");
 var forecastContainerEl = document.querySelector("#forecast-container");
 var forecastCardContainerEl = document.createElement("div");
 forecastCardContainerEl.classList = ("card-deck");
+// An element for the saved searches container
+var savedSearchesContainerEl = document.querySelector("#saved-searches");
 
 // A moment for the current date
 var currentDate = moment().format("M/D/YYYY");
@@ -34,6 +36,15 @@ var formSubmitHandler = function(event) {
     }
 };
 
+// A function to save the most recent search
+var savedSearchesHandler = function(city) {
+    console.log("savedSearchesHandler was called for " + city);
+    searchEl = document.createElement("p");
+    searchEl.setAttribute("city-search", city);
+    searchEl.textContent = city;
+    savedSearchesContainerEl.appendChild(searchEl);
+};
+
 // Function to get the current weather data, uv data, and 5 day forecast
 var getCurrentWeather = function(city) {
     // Create a URL for a current weather query, specifying the city, that imperial units are desired, and adding my API key
@@ -42,6 +53,10 @@ var getCurrentWeather = function(city) {
         return response.json().then(function(data) {
             // display the weather data provided
             displayCurrentWeather(data, city);
+            // get the named city from the data
+            var cityName = data.name;
+            // save the successful search in the saved searches list
+            savedSearchesHandler(cityName);
             // Get the latitude and longitude from the weather data
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
