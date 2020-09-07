@@ -58,7 +58,7 @@ var loadSavedSearches = function() {
 var addSavedSearchButton = function(city) {
     console.log("savedSearchesHandler was called for " + city);
     searchEl = document.createElement("button");
-    searchEl.classList = "btn";
+    searchEl.classList = "btn btn-white btn-block btn-outline-dark";
     searchEl.setAttribute("city-search", city);
     searchEl.textContent = city;
     return searchEl;
