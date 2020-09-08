@@ -9,6 +9,11 @@ var cityInputEl = document.querySelector("#city");
 var currentWeatherContainerEl = document.querySelector("#current-weather-container");
 // create a container for the current weather
 var currentWeatherEl = document.createElement("div");
+currentWeatherEl.classList = "card align-left p-3";
+currentWeatherEl.id = "current-weather"
+// create a container for the current weather header
+var currentWeatherHeader = document.createElement("div");
+currentWeatherHeader.classList = "header";
 // An element for the city returned by the API
 var citySearchTerm = document.querySelector("#city-search-term");
 // An element for the forecast container
@@ -173,14 +178,12 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // clear old content
     currentWeatherContainerEl.textContent = "";
     currentWeatherEl.textContent = "";
-    // var currentWeatherEl = document.createElement("div");
-    currentWeatherEl.classList = "card align-left p-3";
-    currentWeatherEl.id = "current-weather"
-
-    // create a heading for the city name
+    // create a heading container for the city name
     var cityNameHeader = document.createElement("h3");
     // get the city name that the API provided from the search
     var cityName = weatherData.name;
+    // create the header text
+    cityNameHeader.textContent = cityName + " (" + currentDate + ") ";
     // get the weather icon for the current weather
     var iconCode = weatherData.weather[0].icon;
     var iconCodeText = weatherData.weather[0].description;
@@ -188,12 +191,14 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // get the latitude and longitude
     cityLatEl = weatherData.coord.lat;
     cityLonEl = weatherData.coord.lon;
-    // create the header
-    cityNameHeader.textContent = cityName + " (" + currentDate + ") ";
-    // append the icon to the header
-    cityNameHeader.appendChild(iconEl);
-    // append the name to the container
-    currentWeatherEl.appendChild(cityNameHeader);
+    // append the heading to the header div
+    currentWeatherHeader.appendChild(cityNameHeader)
+    // append the image to the header div
+    currentWeatherHeader.appendChild(iconEl);
+    // set the data-alt attribute for a tooltip
+
+    // append the header to the container
+    currentWeatherEl.appendChild(currentWeatherHeader);
 
     // create an element for the temperature
     var currentTempEl = document.createElement("p");
@@ -251,9 +256,16 @@ var getIcon = function(iconCode, iconCodeText) {
     // Create a URL for the weather icon provided by the weather data
     var iconUrl = "http://openweathermap.org/img/wn/" + iconCode + "@2x.png"
     // Create an icon image element
-    var iconEl = document.createElement("img")
-    iconEl.setAttribute("src", iconUrl)
-    iconEl.setAttribute("alt", iconCodeText)
+    var iconImgEl = document.createElement("img")
+    iconImgEl.setAttribute("src", iconUrl);
+    iconImgEl.setAttribute("alt", iconCodeText);
+    var tooltipSpan = document.createElement("span");
+    tooltipSpan.classList = "tooltiptext";
+    tooltipSpan.textContent = iconCodeText;
+    var iconEl = document.createElement("div")
+    iconEl.classList = "tooltip"
+    iconEl.appendChild(iconImgEl);
+    iconEl.appendChild(tooltipSpan);
     return(iconEl);
 };
 
