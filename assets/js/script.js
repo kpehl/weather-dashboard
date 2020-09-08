@@ -47,7 +47,6 @@ var loadSavedSearches = function() {
     }
     $.each(savedSearchesArr, function(index,savedSearchItem) {
         searchEl = addSavedSearchButton(savedSearchItem);
-        console.log(searchEl);
         savedSearchesContainerEl.appendChild(searchEl)
         });
     // if the DOM list is longer than 10, remove the last (oldest) value
@@ -59,7 +58,6 @@ var loadSavedSearches = function() {
 
 // A function create a saved search button for a city
 var addSavedSearchButton = function(city) {
-    console.log("savedSearchesHandler was called for " + city);
     searchEl = document.createElement("button");
     searchEl.classList = "btn btn-white btn-block btn-outline-dark";
     searchEl.setAttribute("city-search", city);
@@ -110,6 +108,36 @@ var getCurrentWeather = function(city) {
     var weatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&APPID=" + apiKey;
     fetch(weatherApiUrl).then(function(response) {
         return response.json().then(function(data) {
+            // error handling
+            switch (data.cod) {
+                case "404":
+                    // clear displayed data from the DOM
+                    currentWeatherContainerEl.textContent = "";
+                    currentWeatherEl.textContent = "";
+                    forecastContainerEl.textContent = "";
+                    forecastCardContainerEl.textContent = "";
+                    alert("404 Error: " + data.message);
+                    break;
+                case "401":
+                    // clear displayed data from the DOM
+                    currentWeatherContainerEl.textContent = "";
+                    currentWeatherEl.textContent = "";
+                    forecastContainerEl.textContent = "";
+                    forecastCardContainerEl.textContent = "";
+                    alert("401 Error: " + data.message);
+                    break;
+                case "429":
+                    // clear displayed data from the DOM
+                    currentWeatherContainerEl.textContent = "";
+                    currentWeatherEl.textContent = "";
+                    forecastContainerEl.textContent = "";
+                    forecastCardContainerEl.textContent = "";                    
+                    alert("429 Error: " +data.message);
+                    break;
+            };
+                
+            console.log(data.cod, typeof(data.cod));
+            
             // display the weather data provided
             displayCurrentWeather(data, city);
             // get the named city from the data
@@ -133,9 +161,9 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    // .catch(function(error) {
-    //     alert("Unable to connect to Open Weather Map Current Weather API")
-    // })
+    .catch(function(error) {
+        document.location.reload();
+    })
 };
 
 // Function to display the current weather data
