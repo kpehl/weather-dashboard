@@ -105,7 +105,7 @@ var savedSearchesHandler = function(event) {
 // Function to get the current weather data, uv data, and 5 day forecast
 var getCurrentWeather = function(city) {
     // Create a URL for a current weather query, specifying the city, that imperial units are desired, and adding my API key
-    var weatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&APPID=" + apiKey;
+    var weatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&APPID=" + apiKey;
     fetch(weatherApiUrl).then(function(response) {
         return response.json().then(function(data) {
             // error handling
@@ -149,7 +149,7 @@ var getCurrentWeather = function(city) {
             var cityLon = data.coord.lon;
             // use a nested fetch to get the UV data and the forecast data with the defined latitude and longitude
             // Create a URL for the one call query with current weather, uvi, and 7 day forecast
-            var oneCallUrl = "http://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
+            var oneCallUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
             return fetch(oneCallUrl);
         })
         .then(function(response) {
@@ -161,9 +161,9 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    // .catch(function(error) {
-    //     document.location.reload();
-    // })
+    .catch(function(error) {
+        document.location.reload();
+    })
 };
 
 // Function to display the current weather data
@@ -249,7 +249,7 @@ var displayCurrentUv = function(data) {
 // A function to generate the icon image tag
 var getIcon = function(iconCode, iconCodeText) {
     // Create a URL for the weather icon provided by the weather data
-    var iconUrl = "http://openweathermap.org/img/wn/" + iconCode + "@2x.png"
+    var iconUrl = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png"
     // Create an icon image element
     var iconEl = document.createElement("img")
     iconEl.setAttribute("src", iconUrl)
