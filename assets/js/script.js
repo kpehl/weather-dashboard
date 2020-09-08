@@ -161,9 +161,9 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    .catch(function(error) {
-        document.location.reload();
-    })
+    // .catch(function(error) {
+    //     document.location.reload();
+    // })
 };
 
 // Function to display the current weather data
