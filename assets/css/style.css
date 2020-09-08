@@ -33,11 +33,11 @@ main h6 {
     display: inline-block;
     opacity: 1;
   }
-  
+
  .tooltiptext {
     visibility: hidden;
     width: 75px;
-    background-color: #5bc0de;
+    background-color: #f7f7f7;
     color: #000;
     text-align: center;
     word-wrap: normal;
