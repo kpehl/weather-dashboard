@@ -203,8 +203,13 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
 
     // create an element for the temperature
     var currentTempEl = document.createElement("p");
+    // get the temperature from the API data
     var currentTemp = weatherData.main.temp;
+    // round the temperature to one decimal place
+    var currentTemp = currentTemp.toFixed(1);
+    // create the temperature text
     currentTempEl.textContent = "Temperature: " + currentTemp + " °F";
+    // append the text to the current weather container
     currentWeatherEl.appendChild(currentTempEl);
 
     // create an element for the humidity
@@ -290,7 +295,7 @@ var displayForecast = function(data) {
     for (var i = 1; i < 6; i++) {
         var j = i-1;
         forecastDate[j] = moment.unix(data.daily[i].dt).format("M/D/YYYY");
-        dailyMaxTemp[j] = data.daily[i].temp.max;
+        dailyMaxTemp[j] = (data.daily[i].temp.max);
         dailyMaxHumidity[j] = data.daily[i].humidity;
         dailyIconCode[j] = data.daily[i].weather[0].icon;
         dailyIconCodeText[j] = data.daily[i].weather[0].description;
@@ -321,7 +326,7 @@ var displayForecast = function(data) {
         // Create the icon and append it
         var iconCodeEl = getIcon(dailyIconCode[i], dailyIconCodeText[i]);
         cardBody.appendChild(iconCodeEl);
-        // Create the daily max temperature and append it
+        // Create the daily max temperature, and append it
         var tempEl = document.createElement("p");
         tempEl.textContent = "Temp: " + dailyMaxTemp[i] + " °F";
         cardBody.appendChild(tempEl);
