@@ -1,6 +1,7 @@
 
 html {
     box-sizing: border-box;
+    height: 100%;
 }
 
 *,
@@ -27,6 +28,14 @@ main h6 {
     position: relative;
     left: 1px;
     margin: auto;
+}
+
+footer {
+    flex-shrink: 0;
+    width: 100%;
+    text-align: start;
+    z-index: 0;
+    position: absolute;
 }
 
 
