@@ -177,6 +177,7 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     // console.log(searchTerm);
     // clear old content
     currentWeatherContainerEl.textContent = "";
+    currentWeatherHeader.textContent = "";
     currentWeatherEl.textContent = "";
     // create a heading container for the city name
     var cityNameHeader = document.createElement("h3");
