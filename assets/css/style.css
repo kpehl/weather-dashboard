@@ -13,6 +13,10 @@ header img {
     float: left;
 }
 
+header {
+    text-align: left;
+}
+
 main h1,
 main h2,
 main h3,
@@ -47,6 +51,9 @@ main h6 {
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
+    bottom: 45%;
+    left: 15%;
+    margin-left: 40px;
   }
   
   .tooltip:hover .tooltiptext {
