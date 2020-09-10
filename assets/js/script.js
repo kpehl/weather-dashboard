@@ -152,21 +152,35 @@ var getCurrentWeather = function(city) {
             // Get the latitude and longitude from the weather data
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
-            // use a nested fetch to get the UV data and the forecast data with the defined latitude and longitude
-            // Create a URL for the one call query with current weather, uvi, and 7 day forecast
+            // use a nested fetch to get the forecast data with the defined latitude and longitude
+            // Create a URL for the one call query with current weather, uvi ( not currently working ), and 7 day forecast
             var oneCallUrl = "http://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
             return fetch(oneCallUrl);
         })
         .then(function(response) {
             return response.json().then(function(data) {
-                // display the current UV data on the card
-                displayCurrentUv(data);
+
                 //display the 5 day forecast data in a new set of cards
                 displayForecast(data);
+
+                var cityLat = data.lat;
+                var cityLon = data.lon;
+                console.log(cityLat, cityLon)
+
+                // use another nested fetch to get the UVI data
+                var uviUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=86a0171fe8b8a02fbb9273530ba556fd"
+                return fetch(uviUrl);
+            })
+        })
+        .then(function(response) {
+            return response.json().then(function(data) {
+                // display the current UV data on the card
+                displayCurrentUv(data);
             })
         })
     })
     .catch(function(error) {
+        alert("Something went wrong - reloading")
         document.location.reload();
     })
 };
@@ -239,9 +253,13 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
 // A function to display the UV index data
 var displayCurrentUv = function(data) {
     // create an element for the UV index
-    var currentUvEl = document.createElement("p");
+    var currentUvEl = document.createElement("a");
     // set the value based on the API data
-    var currentUv = data.current.uvi;
+    var currentUv = data.value;
+    console.log(currentUv);
+    // set the link to the EPA UV Index Scale page
+    currentUvEl.setAttribute("href", "https://www.epa.gov/sunsafety/uv-index-scale-0");
+    currentUvEl.setAttribute("target", "_blank");
     // add a badge span with a color for Favorable (success), Moderate (warning), and Severe (danger)
     var uvSpan = document.createElement("span");
     if (currentUv > 7) {
@@ -253,7 +271,8 @@ var displayCurrentUv = function(data) {
     }
 
     // add the value of the UV index to the badge
-    uvSpan.textContent = currentUv;
+    uvSpan.innerHTML = currentUv;
+    console.log(uvSpan)
     // create the text context of the element
     currentUvEl.textContent = "UV Index: ";
     // create the text context of the element
