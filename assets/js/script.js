@@ -152,15 +152,9 @@ var getCurrentWeather = function(city) {
             // Get the latitude and longitude from the weather data
             var cityLat = data.coord.lat;
             var cityLon = data.coord.lon;
-<<<<<<< HEAD
-            // use a nested fetch to get the UV data and the forecast data with the defined latitude and longitude
-            // Create a URL for the one call query with current weather, uvi, and 7 day forecast
-            var oneCallUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
-=======
             // use a nested fetch to get the forecast data with the defined latitude and longitude
             // Create a URL for the one call query with current weather, uvi ( not currently working ), and 7 day forecast
             var oneCallUrl = "http://api.openweathermap.org/data/2.5/onecall?lat=" + cityLat + "&lon=" + cityLon + "&units=imperial&exclude=minutely,hourly&APPID=" + apiKey;
->>>>>>> develop
             return fetch(oneCallUrl);
         })
         .then(function(response) {
