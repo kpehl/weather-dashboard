@@ -185,18 +185,25 @@ var displayCurrentWeather = function(weatherData, searchTerm) {
     var cityName = weatherData.name;
     // create the header text
     cityNameHeader.textContent = cityName + " (" + currentDate + ") ";
+    
     // get the weather icon for the current weather
     var iconCode = weatherData.weather[0].icon;
     var iconCodeText = weatherData.weather[0].description;
-    iconEl = getIcon(iconCode, iconCodeText);
+    // var iconEl = getIcon(iconCode, iconCodeText);
+
+    // get the weather condition code
+    var weatherConditionCode = weatherData.weather[0].id;
+    // get an alternate weather icon
+    var altIconEl = getAltIcon(weatherConditionCode, iconCode, iconCodeText);
+
     // get the latitude and longitude
     cityLatEl = weatherData.coord.lat;
     cityLonEl = weatherData.coord.lon;
+
     // append the heading to the header div
     currentWeatherHeader.appendChild(cityNameHeader)
     // append the image to the header div
-    currentWeatherHeader.appendChild(iconEl);
-    // set the data-alt attribute for a tooltip
+    currentWeatherHeader.appendChild(altIconEl);
 
     // append the header to the container
     currentWeatherEl.appendChild(currentWeatherHeader);
@@ -235,7 +242,7 @@ var displayCurrentUv = function(data) {
     var currentUvEl = document.createElement("p");
     // set the value based on the API data
     var currentUv = data.current.uvi;
-    // add a badge span with a color for Favorable (success), Moderate (warning), and Sever (danger)
+    // add a badge span with a color for Favorable (success), Moderate (warning), and Severe (danger)
     var uvSpan = document.createElement("span");
     if (currentUv > 7) {
         uvSpan.classList = "badge badge-danger"
@@ -275,6 +282,32 @@ var getIcon = function(iconCode, iconCodeText) {
     return(iconEl);
 };
 
+// A function to generate an alternate icon image tag
+var getAltIcon = function(weatherConditionCode, iconCode, iconCodeText) {
+    console.log(weatherConditionCode, iconCode, iconCodeText);
+    if (iconCode.includes("n")){
+        console.log("wi-owm-night-" + weatherConditionCode);       
+        var altIconCode = "wi-owm-night-" + weatherConditionCode;
+    } else if (iconCode.includes("d")) {
+        console.log("wi-owm-day-" + weatherConditionCode);
+        var altIconCode = "wi-owm-day-" + weatherConditionCode;
+    } else {
+        console.log("wi-owm-" + weatherConditionCode);
+        var altIconCode = "wi-owm-" + weatherConditionCode;
+    }
+    var altIconImgEl = '<i class="wi ' + altIconCode + '"></i>';
+
+    var tooltipSpan = document.createElement("span");
+    tooltipSpan.classList = "tooltiptext";
+    tooltipSpan.textContent = iconCodeText;
+    var altIconEl = document.createElement("div")
+    altIconEl.classList = "tooltip";
+    altIconEl.innerHTML = altIconImgEl;
+    altIconEl.appendChild(tooltipSpan);
+    return(altIconEl);
+};
+
+
 // A function to display the 5 day forecast
 var displayForecast = function(data) {
     // clear out old data
@@ -291,6 +324,7 @@ var displayForecast = function(data) {
     var dailyMaxHumidity = [];
     var dailyIconCode = [];
     var dailyIconCodeText = [];
+    var dailyWeatherConditionCode = [];
     var cardElementName = [];
     for (var i = 1; i < 6; i++) {
         var j = i-1;
@@ -299,6 +333,7 @@ var displayForecast = function(data) {
         dailyMaxHumidity[j] = data.daily[i].humidity;
         dailyIconCode[j] = data.daily[i].weather[0].icon;
         dailyIconCodeText[j] = data.daily[i].weather[0].description;
+        dailyWeatherConditionCode[j] = data.daily[i].weather[0].id;
         cardElementName[j] = "forecastCard" + j;
     }
     
@@ -320,18 +355,25 @@ var displayForecast = function(data) {
         cardBody.classList = ("card-body");
         // Create the card title with the date and append it
         var cardTitle = document.createElement("h5");
-        cardTitle.classList = ("card-title");
+        cardTitle.classList = ("card-title pb-4 align-top");
         cardTitle.textContent = forecastDate[i]
         cardBody.appendChild(cardTitle);
+
         // Create the icon and append it
-        var iconCodeEl = getIcon(dailyIconCode[i], dailyIconCodeText[i]);
-        cardBody.appendChild(iconCodeEl);
+        // var iconCodeEl = getIcon(dailyIconCode[i], dailyIconCodeText[i]);
+
+        var altIconEl = getAltIcon(dailyWeatherConditionCode[i], dailyIconCode[i],dailyIconCodeText[i]);
+
+        cardBody.appendChild(altIconEl);
+
         // Create the daily max temperature, and append it
         var tempEl = document.createElement("p");
+        tempEl.classList = "card-text";
         tempEl.textContent = "Temp: " + dailyMaxTemp[i] + " °F";
         cardBody.appendChild(tempEl);
         // Create the daily max humidity and append it
         var humidityEl = document.createElement("p");
+        humidityEl.classList = "card-text";
         humidityEl.textContent = "Humidity: " + dailyMaxHumidity[i] + "%";
         cardBody.appendChild(humidityEl);
 

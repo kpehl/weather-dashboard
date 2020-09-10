@@ -38,6 +38,17 @@ footer {
     position: absolute;
 }
 
+/* Weather Icon Styling */
+
+.wi {
+    font-size: 3em;
+    padding-left: 2rem;
+}
+
+footer .wi {
+    font-size: 1em;
+}
+
 
 /* Tooltip Styling */
 
