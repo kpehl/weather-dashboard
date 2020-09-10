@@ -179,10 +179,10 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    .catch(function(error) {
-        alert("Something went wrong - reloading")
-        document.location.reload();
-    })
+    // .catch(function(error) {
+    //     alert("Something went wrong - reloading")
+    //     document.location.reload();
+    // })
 };
 
 // Function to display the current weather data
