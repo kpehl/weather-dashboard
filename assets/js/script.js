@@ -168,7 +168,7 @@ var getCurrentWeather = function(city) {
                 console.log(cityLat, cityLon)
 
                 // use another nested fetch to get the UVI data
-                var uviUrl = "http://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=86a0171fe8b8a02fbb9273530ba556fd"
+                var uviUrl = "https://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=86a0171fe8b8a02fbb9273530ba556fd"
                 return fetch(uviUrl);
             })
         })
@@ -179,10 +179,10 @@ var getCurrentWeather = function(city) {
             })
         })
     })
-    // .catch(function(error) {
-    //     alert("Something went wrong - reloading")
-    //     document.location.reload();
-    // })
+    .catch(function(error) {
+        alert("Something went wrong - reloading")
+        document.location.reload();
+    })
 };
 
 // Function to display the current weather data
