@@ -48,7 +48,6 @@ var loadSavedSearches = function() {
     savedSearchesArr = JSON.parse(localStorage.getItem("city-weather"));
     if (!savedSearchesArr) {
       savedSearchesArr = [];
-      console.log("loadSavedSearches found none")
     }
     $.each(savedSearchesArr, function(index,savedSearchItem) {
         searchEl = addSavedSearchButton(savedSearchItem);
@@ -140,8 +139,6 @@ var getCurrentWeather = function(city) {
                     alert("429 Error: " +data.message);
                     break;
             };
-                
-            console.log(data.cod, typeof(data.cod));
             
             // display the weather data provided
             displayCurrentWeather(data, city);
@@ -165,7 +162,6 @@ var getCurrentWeather = function(city) {
 
                 var cityLat = data.lat;
                 var cityLon = data.lon;
-                console.log(cityLat, cityLon)
 
                 // use another nested fetch to get the UVI data
                 var uviUrl = "https://api.openweathermap.org/data/2.5/uvi?lat=" + cityLat + "&lon=" + cityLon + "&APPID=86a0171fe8b8a02fbb9273530ba556fd"
@@ -187,8 +183,6 @@ var getCurrentWeather = function(city) {
 
 // Function to display the current weather data
 var displayCurrentWeather = function(weatherData, searchTerm) {
-    // console.log(weatherData);
-    // console.log(searchTerm);
     // clear old content
     currentWeatherContainerEl.textContent = "";
     currentWeatherHeader.textContent = "";
@@ -256,7 +250,6 @@ var displayCurrentUv = function(data) {
     var currentUvEl = document.createElement("a");
     // set the value based on the API data
     var currentUv = data.value;
-    console.log(currentUv);
     // set the link to the EPA UV Index Scale page
     currentUvEl.setAttribute("href", "https://www.epa.gov/sunsafety/uv-index-scale-0");
     currentUvEl.setAttribute("target", "_blank");
@@ -272,7 +265,6 @@ var displayCurrentUv = function(data) {
 
     // add the value of the UV index to the badge
     uvSpan.innerHTML = currentUv;
-    console.log(uvSpan)
     // create the text context of the element
     currentUvEl.textContent = "UV Index: ";
     // create the text context of the element
@@ -303,15 +295,11 @@ var getIcon = function(iconCode, iconCodeText) {
 
 // A function to generate an alternate icon image tag
 var getAltIcon = function(weatherConditionCode, iconCode, iconCodeText) {
-    console.log(weatherConditionCode, iconCode, iconCodeText);
-    if (iconCode.includes("n")){
-        console.log("wi-owm-night-" + weatherConditionCode);       
+    if (iconCode.includes("n")){      
         var altIconCode = "wi-owm-night-" + weatherConditionCode;
     } else if (iconCode.includes("d")) {
-        console.log("wi-owm-day-" + weatherConditionCode);
         var altIconCode = "wi-owm-day-" + weatherConditionCode;
     } else {
-        console.log("wi-owm-" + weatherConditionCode);
         var altIconCode = "wi-owm-" + weatherConditionCode;
     }
     var altIconImgEl = '<i class="wi ' + altIconCode + '"></i>';
@@ -355,13 +343,6 @@ var displayForecast = function(data) {
         dailyWeatherConditionCode[j] = data.daily[i].weather[0].id;
         cardElementName[j] = "forecastCard" + j;
     }
-    
-    // console.log(forecastDate);
-    // console.log(dailyMaxTemp);
-    // console.log(dailyMaxHumidity);
-    // console.log(dailyIconCode);
-    // console.log(dailyIconCodeText);
-    // console.log(cardElementName);
 
     // create the forecast cards
     for (var i = 0; i < 5; i++) {
